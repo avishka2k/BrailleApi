@@ -15,7 +15,7 @@ namespace BrailleApi.Controllers
             {
                 for (int j = 0; j < width; j++)
                 {
-                    dotPattern += ". ";
+                    dotPattern += ".   ";
                 }
                 dotPattern += "\n";
             }
