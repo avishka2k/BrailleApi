@@ -23,7 +23,7 @@ namespace BrailleApi.Controllers
             return Ok(dotPattern);
         }
         [HttpGet("traingle/{height}")]
-        public IActionResult traingle(int height)
+        public IActionResult Traingle(int height)
         {
             string dotPattern = "";
             for (int i = 1; i <= height; i++)
@@ -42,7 +42,7 @@ namespace BrailleApi.Controllers
             return Ok(dotPattern);
         }
         [HttpGet("pyramid/{size}")]
-        public IActionResult pyramid(int size)
+        public IActionResult Pyramid(int size)
         {
             string dotPattern = "";
 
