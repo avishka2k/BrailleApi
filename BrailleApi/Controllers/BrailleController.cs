@@ -118,7 +118,7 @@ namespace BrailleApi.Controllers
 
                 dotPattern += "\n";
             }
-        
+
             return Ok(dotPattern);
         }
         [HttpGet("diamond/{size}")]
@@ -267,5 +267,79 @@ namespace BrailleApi.Controllers
             return Ok(dotPattern);
         }
 
+        [HttpGet("arrow/{n}")]
+        public IActionResult GetArrow(int n)
+        {
+            string dotPattern = "";
+
+            // Upper part of the arrow
+            for (int i = 1; i <= n; i++)
+            {
+                for (int j = 1; j <= n - i + 1; j++)
+                {
+                    dotPattern += " ";
+
+                }
+                for (int j = 1; j <= i; j++)
+                {
+                    dotPattern += ".";
+
+                }
+
+                // Add spaces before and after rectangle to align it in the middle
+                int spacesBefore = (n - i + 1) - 1; // Spaces before rectangle
+                int spacesAfter = (n - i + 1) - 1; // Spaces after rectangle
+
+                for (int j = 1; j <= spacesBefore; j++)
+                {
+                    dotPattern += " ";
+
+                }
+
+                // Rectangle part
+                if (i == 2 * n / 2) // Only middle row
+                {
+                    int width = 10; // Width of the rectangle
+
+                    for (int j = 1; j <= width; j++)
+                    {
+                        dotPattern += ".";
+
+                    }
+                }
+                else // Empty rows
+                {
+                    for (int j = 1; j <= spacesAfter + 1; j++)
+                    {
+                        dotPattern += " ";
+
+                    }
+                }
+
+                Console.WriteLine();
+            }
+
+            // Lower part of the arrow
+            for (int i = n - 1; i >= 1; i--)
+            {
+                for (int j = 1; j <= n - i + 1; j++)
+                {
+                    dotPattern += " ";
+
+                }
+                for (int j = 1; j <= i; j++)
+                {
+                    dotPattern += ".";
+
+                }
+                dotPattern += "\n";
+            }
+            return Ok(dotPattern);
+
+        }
+
+
     }
-}
+
+}        
+    
