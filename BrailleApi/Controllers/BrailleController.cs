@@ -1,6 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
+using System.IO;
+using System.Net;
 
 namespace BrailleApi.Controllers
 {
@@ -23,7 +27,7 @@ namespace BrailleApi.Controllers
             return Ok(dotPattern);
         }
         [HttpGet("traingle/{height}")]
-        public IActionResult traingle(int height)
+        public IActionResult Traingle(int height)
         {
             string dotPattern = "";
             for (int i = 1; i <= height; i++)
@@ -42,7 +46,7 @@ namespace BrailleApi.Controllers
             return Ok(dotPattern);
         }
         [HttpGet("pyramid/{size}")]
-        public IActionResult pyramid(int size)
+        public IActionResult Pyramid(int size)
         {
             string dotPattern = "";
 
@@ -242,29 +246,19 @@ namespace BrailleApi.Controllers
             return Ok(dotPattern);
         }
 
-
-        [HttpGet("circle/{radius}/{resolution}")]
-        public IActionResult GetCircle(int radius, int resolution)
+        [HttpGet("circle/{radius}/{x}/{y}")]
+        public IActionResult Circle(int radius, int x, int y)
         {
-            string dotPattern = "";
-            double step = 2 * Math.PI / resolution;
-            for (int y = -radius; y <= radius; y++)
+            Bitmap bitmap = new Bitmap(200, 200);
+            using (Graphics g = Graphics.FromImage(bitmap))
             {
-                for (int x = -radius; x <= radius; x++)
-                {
-                    double distance = Math.Sqrt(x * x + y * y);
-                    if (Math.Abs(distance - radius) < step / 2)
-                    {
-                        dotPattern += ".";
-                    }
-                    else
-                    {
-                        dotPattern += " ";
-                    }
-                }
-                dotPattern += "\n";
+                Pen pen = new Pen(Color.Black, 2);
+                DrawCircle(g, pen, x, x, radius);
+                MemoryStream ms = new MemoryStream();
+                bitmap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                byte[] bytes = ms.ToArray();
+                return File(bytes, "image/png");
             }
-            return Ok(dotPattern);
         }
 
         [HttpGet("arrow/{n}")]
@@ -338,6 +332,18 @@ namespace BrailleApi.Controllers
 
         }
 
+
+
+        private void DrawCircle(Graphics g, Pen pen, int x, int y, int radius)
+        {
+            float[] dashPattern = new float[] { 1f, 4f };
+            pen.DashPattern = dashPattern;
+            pen.EndCap = LineCap.Custom;
+            pen.CustomEndCap = new CustomLineCap(null, new GraphicsPath(new PointF[] { new PointF(0, 0), new PointF(-2, 2), new PointF(2, 2), new PointF(0, 0) }, new byte[] { 0, 1, 1, 1 }));
+            int rectX = x - radius;
+            int rectY = y - radius;
+            g.DrawEllipse(pen, rectX, rectY, radius * 2, radius * 2);
+        }
 
     }
 
